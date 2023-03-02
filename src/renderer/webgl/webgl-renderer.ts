@@ -1,5 +1,5 @@
 import { zoomIdentity, ZoomTransform } from 'd3-zoom';
-import { INodeBase } from '../../models/node';
+import { INode, INodeBase } from '../../models/node';
 import { IEdgeBase } from '../../models/edge';
 import { IGraph } from '../../models/graph';
 import { IPosition, IRectangle } from '../../common';
@@ -76,6 +76,11 @@ export class WebGLRenderer<N extends INodeBase, E extends IEdgeBase> extends Emi
   }
 
   translateOriginToCenter(): void {
+    throw new Error('Method not implemented.');
+  }
+  
+  getFitZoomTranformForNode(node: INode<N, E>): ZoomTransform {
+    console.log('node:', node);
     throw new Error('Method not implemented.');
   }
 }

@@ -272,4 +272,31 @@ export class CanvasRenderer<N extends INodeBase, E extends IEdgeBase> extends Em
   translateOriginToCenter() {
     this._isOriginCentered = true;
   }
+
+  getFitZoomTranformForNode(node: INode<N, E>): ZoomTransform {
+    const nodePosition = node.getCenter();
+    const nodeSize = node.style.size;
+    const nodeView = {
+      x: nodeSize ? nodePosition.x - nodeSize / 2: nodePosition.x,
+      y: nodeSize ? nodePosition.y - nodeSize / 2: nodePosition.y,
+      width: nodeSize || 40,
+      height: nodeSize || 40,
+    };
+
+    const simulationView = this.getSimulationViewRectangle();
+
+    const heightScale = simulationView.height / (nodeView.height * (1 + this._settings.fitZoomMargin));
+    const widthScale = simulationView.width / (nodeView.width * (1 + this._settings.fitZoomMargin));
+    // The scale of the translation and the zoom needed to fit a graph view
+    // into a simulation view (renderer canvas)
+    const scale = Math.min(heightScale, widthScale);
+
+    const previousZoom = this.transform.k;
+    const newZoom = Math.max(Math.min(scale * previousZoom, this._settings.maxZoom), this._settings.minZoom);
+    
+    const newX = (simulationView.width / 2) * previousZoom * (1 - newZoom) - nodePosition.x * newZoom;
+    const newY = (simulationView.height / 2) * previousZoom * (1 - newZoom) - nodePosition.y * newZoom;
+
+    return zoomIdentity.translate(newX, newY).scale(newZoom);
+  }
 }

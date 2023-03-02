@@ -423,4 +423,24 @@ export class DefaultView<N extends INodeBase, E extends IEdgeBase> implements IO
   releaseNodes() {
     this._simulator.releaseNodes();
   }
+
+  // Focus Node 
+  focusNode(nodeId: string, onFocused?: () => void) {
+    const node = this._graph.getNodeById(nodeId);
+    if (!node) {
+      return;
+    }
+    const fitZoomTransform = this._renderer.getFitZoomTranformForNode(node);
+    
+    select(this._canvas)
+      .transition()
+      .duration(this._settings.zoomFitTransitionMs)
+      .ease(easeLinear)
+      .call(this._d3Zoom.transform, fitZoomTransform)
+      .call(() => {
+        this._renderer.render(this._graph);
+        onFocused?.();
+      });
+  }
+  
 }

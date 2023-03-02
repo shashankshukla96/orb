@@ -81,6 +81,12 @@
     orb.view.render(() => {
       orb.view.recenter();
     });
+
+    // Focus on a node when it's clicked
+    orb.events.on(Orb.OrbEventType.NODE_CLICK, (data) => {
+      orb.view.focusNode(data.node.id);
+    });
+
   </script>
 </body>
 </html>

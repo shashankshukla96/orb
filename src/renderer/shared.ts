@@ -1,6 +1,6 @@
 import { ZoomTransform } from 'd3-zoom';
 import { IPosition, IRectangle } from '../common';
-import { INodeBase } from '../models/node';
+import { INode, INodeBase } from '../models/node';
 import { IEdgeBase } from '../models/edge';
 import { IGraph } from '../models/graph';
 import { IEmitter } from '../utils/emitter.utils';
@@ -57,6 +57,8 @@ export interface IRenderer<N extends INodeBase, E extends IEdgeBase> extends IEm
   reset(): void;
 
   getFitZoomTransform(graph: IGraph<N, E>): ZoomTransform;
+
+  getFitZoomTranformForNode(node: INode<N, E>): ZoomTransform;
 
   getSimulationPosition(canvasPoint: IPosition): IPosition;
 
