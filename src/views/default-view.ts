@@ -12,7 +12,7 @@ import { IGraph } from '../models/graph';
 import { INode, INodeBase, isNode } from '../models/node';
 import { IEdgeBase, isEdge } from '../models/edge';
 import { IOrbView, IOrbViewContext } from './shared';
-import { IEventStrategy } from '../models/strategy';
+import { IEventStrategy, selectEdge, selectNode } from '../models/strategy';
 import { ID3SimulatorEngineSettingsUpdate } from '../simulator/engine/d3-simulator-engine';
 import { copyObject } from '../utils/object.utils';
 import { OrbEmitter, OrbEventType } from '../events';
@@ -464,4 +464,44 @@ export class DefaultView<N extends INodeBase, E extends IEdgeBase> implements IO
   releaseNodes() {
     this._simulator.releaseNodes();
   }
+
+  // Move a node to the center of the canvas
+  focusNodeById(nodeId: any, onFocused?: () => void) {
+    const node = this._graph.getNodeById(nodeId);
+    if (!node) {
+      return;
+    }
+    const fitZoomTransform = this._renderer.getFitZoomTranformForNode(node);
+
+    select(this._canvas)
+      .transition()
+      .duration(this._settings.zoomFitTransitionMs)
+      .ease(easeLinear)
+      .call(this._d3Zoom.transform, fitZoomTransform)
+      .call(() => {
+        this._renderer.render(this._graph);
+        onFocused?.();
+      });
+  }
+
+  // Dynamically select a node
+  selectNodeById(nodeId: any) {
+    const node = this._graph.getNodeById(nodeId);
+    if (!node) {
+      return;
+    }
+    selectNode(this._graph, node);
+    this._renderer.render(this._graph);
+  }
+
+  // Dynamically select an edge
+  selectEdgeById(edgeId: any) {
+    const edge = this._graph.getEdgeById(edgeId);
+    if (!edge) {
+      return;
+    }
+    selectEdge(this._graph, edge);
+    this._renderer.render(this._graph);
+  }
+
 }

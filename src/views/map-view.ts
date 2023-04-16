@@ -4,7 +4,7 @@ import { INode, INodeBase, isNode } from '../models/node';
 import { IGraph } from '../models/graph';
 import { IOrbView, IOrbViewContext } from './shared';
 import { IPosition } from '../common';
-import { IEventStrategy } from '../models/strategy';
+import { IEventStrategy, selectEdge, selectNode } from '../models/strategy';
 import { copyObject } from '../utils/object.utils';
 import { OrbEmitter, OrbEventType } from '../events';
 import { IRenderer, RendererType, RenderEventType, IRendererSettingsInit, IRendererSettings } from '../renderer/shared';
@@ -382,5 +382,42 @@ export class MapView<N extends INodeBase, E extends IEdgeBase> implements IOrbVi
       this._leaflet.eachLayer((layer) => this._leaflet.removeLayer(layer));
       newTile.instance.addTo(this._leaflet);
     });
+  }
+
+  // moves the node to the center of the canvas
+  focusNodeById(id: any) {
+    const node = this._graph.getNodeById(id);
+    if (!node) {
+      return;
+    }
+
+    const coordinates = this._settings.getGeoPosition(node);
+    if (!coordinates) {
+      return;
+    }
+
+    this._leaflet.setView([coordinates.lat, coordinates.lng], this._leaflet.getZoom());
+  }
+
+  // Select a node by id
+  selectNodeById(id: any) {
+    const node = this._graph.getNodeById(id);
+    if (!node) {
+      return;
+    }
+
+    selectNode(this._graph, node);
+    this._renderer.render(this._graph);
+  }
+
+  // Select an edge by id
+  selectEdgeById(id: any) {
+    const edge = this._graph.getEdgeById(id);
+    if (!edge) {
+      return;
+    }
+
+    selectEdge(this._graph, edge);
+    this._renderer.render(this._graph);
   }
 }

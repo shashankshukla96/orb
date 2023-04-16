@@ -102,12 +102,12 @@ class DefaultEventStrategy<N extends INodeBase, E extends IEdgeBase> implements 
   }
 }
 
-const selectNode = <N extends INodeBase, E extends IEdgeBase>(graph: IGraph<N, E>, node: INode<N, E>) => {
+export const selectNode = <N extends INodeBase, E extends IEdgeBase>(graph: IGraph<N, E>, node: INode<N, E>) => {
   unselectAll(graph);
   setNodeState(node, GraphObjectState.SELECTED, { isStateOverride: true });
 };
 
-const selectEdge = <N extends INodeBase, E extends IEdgeBase>(graph: IGraph<N, E>, edge: IEdge<N, E>) => {
+export const selectEdge = <N extends INodeBase, E extends IEdgeBase>(graph: IGraph<N, E>, edge: IEdge<N, E>) => {
   unselectAll(graph);
   setEdgeState(edge, GraphObjectState.SELECTED, { isStateOverride: true });
 };

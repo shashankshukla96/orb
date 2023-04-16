@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang='en' type="module">
+
+<head>
+  <base href=".">
+  <meta charset='UTF-8'>
+  <title>Orb | Simple graph on default canvas</title>
+  <script type="text/javascript" src="./orb.js"></script>
+</head>
+<style>
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+  }
+</style>
+
+<body>
+  <div style="display: flex; flex-direction: column; align-items: center; height: 100%;">
+    <h1>Example 7 - Graph Basic Operations</h1>
+
+    <div style="display:flex; flex-direction: row; 
+    justify-content: space-between; width: 70%;">
+      <div style="display: flex; flex-direction: row;">
+
+        <select id="nodes">
+          <option value="0">Select a Node</option>
+          <option value="0">Node id 0 (Cat)</option>
+          <option value="1">Node id 1 (Bird)</option>
+          <option value="2">Node id 2 (Ladybug)</option>
+          <option value="3">Node id 3 (Dog)</option>
+        </select>
+
+        <button onclick="selectNode()">Select the Node</button>
+      </div>
+
+      <div style="display: flex; flex-direction: row">
+        <select id="edges">
+          <option value="0">Select an Edge</option>
+          <option value="0">Cat Likes Cat</option>
+          <option value="1">Cat Eats Bird</option>
+          <option value="2">Cat Hates Ladybug</option>
+          <option value="3">Bird Eats Ladybug</option>
+          <option value="4">Dog Likes Dog</option>
+          <option value="5">Dog Hates Cat</option>
+        </select>
+
+        <button onclick="selectEdge()">Select the Edge</button>
+      </div>
+    </div>
+
+    <p style="width: 70%">Renders a simple graph on the the canvas and perform operations.</p>
+
+    <!--
+      Make sure that your graph container has a defined width and height.
+      Orb will expand to any available space, but won't be visible if it's parent container is collapsed.
+    -->
+    <div id='graph' style="flex: 1; width: 100%;"></div>
+  </div>
+  <script type="text/javascript">
+    const container = document.getElementById('graph');
+
+    const nodes = [
+      { id: 0, label: 'Cat' },
+      { id: 1, label: 'Bird' },
+      { id: 2, label: 'Ladybug' },
+      { id: 3, label: 'Dog' }
+    ];
+    const edges = [
+      { id: 0, start: 0, end: 0, label: 'Likes' },
+      { id: 1, start: 0, end: 1, label: 'Eats' },
+      { id: 2, start: 0, end: 2, label: 'Hates' },
+      { id: 3, start: 1, end: 2, label: 'Eates' },
+      { id: 4, start: 3, end: 3, label: 'Likes' },
+      { id: 5, start: 3, end: 0, label: 'Hates' },
+    ];
+
+    const orb = new Orb.Orb(container);
+
+    orb.data.setDefaultStyle({
+      getNodeStyle(node) {
+        return {
+          borderColor: '#1d1d1d',
+          borderWidth: 0.6,
+          color: '#DD2222',
+          colorHover: '#e7644e',
+          colorSelected: '#e7644e',
+          fontSize: 3,
+          label: node.data.label,
+          size: 4,
+        };
+      },
+      getEdgeStyle(edge) {
+        return {
+          color: '#999999',
+          colorHover: '#1d1d1d',
+          colorSelected: '#1d1d1d',
+          fontSize: 3,
+          width: 0.3,
+          widthHover: 0.9,
+          widthSelected: 0.9,
+          label: edge.data.label,
+        };
+      },
+    });
+
+
+
+    // Initialize nodes and edges
+    orb.data.setup({ nodes, edges });
+
+    orb.view.render(() => {
+      orb.view.recenter();
+    });
+
+    // Focus on a node when it's clicked
+    orb.events.on(Orb.OrbEventType.NODE_CLICK, (data) => {
+      orb.view.focusNodeById(data.node.id);
+    });
+
+    function selectNode() {
+      const select = document.querySelector('#nodes');
+      const value = select.value;
+      orb.view.selectNodeById(value);
+    }
+
+    function selectEdge() {
+      const select = document.querySelector('#edges');
+      const value = select.value;
+      orb.view.selectEdgeById(value);
+    }
+
+  </script>
+</body>
+
+</html>
