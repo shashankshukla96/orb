@@ -1,4 +1,4 @@
-import { INodeBase, INode, NodeShapeType } from '../../models/node';
+import { INodeBase, INode, NodeShapeType, BorderStyleType } from '../../models/node';
 import { IEdgeBase } from '../../models/edge';
 import { drawDiamond, drawHexagon, drawSquare, drawStar, drawTriangleDown, drawTriangleUp, drawCircle } from './shapes';
 import { drawLabel, Label, LabelTextBaseline } from './label';
@@ -141,8 +141,28 @@ const setupCanvas = <N extends INodeBase, E extends IEdgeBase>(
   if (hasBorder) {
     context.lineWidth = node.getBorderWidth();
     const borderColor = node.getBorderColor();
+
     if (borderColor) {
       context.strokeStyle = borderColor.toString();
+    }
+
+    const borderStyle = node.getBorderStyle();
+    if (borderStyle) {
+      switch (borderStyle) {
+        case BorderStyleType.DASHED: {
+          context.setLineDash([2.5, 1]);
+          break;
+        }
+        case BorderStyleType.DOTTED: {
+          context.setLineDash([0.5, 0.5]);
+          break;
+        }
+        case BorderStyleType.SOLID:
+        default: {
+          context.setLineDash([]);
+          break;
+        }
+      }
     }
   }
 

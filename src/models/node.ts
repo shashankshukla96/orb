@@ -32,6 +32,12 @@ export enum NodeShapeType {
   HEXAGON = 'hexagon',
 }
 
+export enum BorderStyleType {
+  SOLID = 'solid',
+  DASHED = 'dashed',
+  DOTTED = 'dotted',
+}
+
 /**
  * Node style properties used to style the node (color, width, label, etc.).
  */
@@ -59,6 +65,7 @@ export type INodeStyle = Partial<{
   size: number;
   mass: number;
   zIndex: number;
+  borderStyle: string;
 }>;
 
 export interface INodeData<N extends INodeBase> {
@@ -95,6 +102,7 @@ export interface INode<N extends INodeBase, E extends IEdgeBase> {
   getBorderWidth(): number;
   getBorderColor(): Color | string | undefined;
   getBackgroundImage(): HTMLImageElement | undefined;
+  getBorderStyle(): string | undefined;
 }
 
 // TODO: Dirty solution: Find another way to listen for global images, maybe through
@@ -311,6 +319,17 @@ export class Node<N extends INodeBase, E extends IEdgeBase> implements INode<N, 
       borderWidth = this.style.borderWidthSelected;
     }
     return borderWidth;
+  }
+
+  getBorderStyle(): string {
+    let borderStyle = 'solid';
+    if (this.style.borderStyle) {
+      borderStyle = this.style.borderStyle;
+    }
+    // if (this.isSelected() && this.style.borderStyleSelected) {
+    //   borderStyle = this.style.borderStyleSelected;
+    // }
+    return borderStyle;
   }
 
   getBorderColor(): Color | string | undefined {
